@@ -5,6 +5,10 @@ import java.awt.Point;
  * The player character
  */
 public class Player {
+    String playerAutoAssign;
+    String playerName;
+    String playerRole;
+    String playerGender;
 
 
 
@@ -21,11 +25,12 @@ public class Player {
 
     public String getName() {
 
-        return null;
+        return playerName;
     }
 
 
     public void setName(String newName) {
+        playerName = newName;
 
     }
 
@@ -48,5 +53,29 @@ public class Player {
 
     public void setCurrentRoom(Room newRoom) {
 
+    }
+
+    public void setPlayerAutoAssign(String autoAssign){
+        playerAutoAssign = autoAssign;
+    }
+
+    public String getPlayerAutoAssign() {
+        return playerAutoAssign;
+    }
+
+    public void setPlayerRole(String role){
+        playerRole = role;
+    }
+
+    public String getPlayerRole() {
+        return playerRole;
+    }
+
+    public void setPlayerGender(String gender){
+        playerGender = gender;
+    }
+
+    public String getPlayerGender() {
+        return playerGender;
     }
 }

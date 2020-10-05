@@ -6,6 +6,11 @@ import java.awt.Point;
  */
 public class Item  {
 
+    int itemId;
+    String itemName;
+    String itemType;
+    Point itemLoc;
+    Room currentRoom;
 
 
     //Constructors
@@ -14,6 +19,10 @@ public class Item  {
     }
 
     public Item(int id, String name, String type, Point xyLocation) {
+        setId(id);
+        setName(name);
+        setType(type);
+        setXyLocation(xyLocation);
 
     }
     
@@ -21,34 +30,35 @@ public class Item  {
 
 
     public int getId() {
-        return 0;
+        return itemId;
        
     }
 
 
     public void setId(int id) {
-
+        itemId = id;
     }
 
 
     public String getName() {
-        return null;
+
+        return itemName;
     }
 
 
     public void setName(String name) {
-
+        itemName = name;
     }
 
 
     public String getType() {
-        return null;
+        return itemType;
 
     }
 
 
     public void setType(String type) {
-
+        itemType = type;
     }
     
 
@@ -75,23 +85,24 @@ public class Item  {
 
 
     public Point getXyLocation() {
-        return null;
+
+        return itemLoc;
      
     }
 
     
     public void setXyLocation(Point newXyLocation) {
-        
+        itemLoc = newXyLocation;
     }
 
 
     public Room getCurrentRoom() {
-        return null;
+        return currentRoom;
         
     }
 
 
     public void setCurrentRoom(Room newCurrentRoom) {
-        
+        currentRoom = newCurrentRoom;
     }
 }
