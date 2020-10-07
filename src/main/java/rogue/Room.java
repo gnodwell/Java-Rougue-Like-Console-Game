@@ -22,6 +22,8 @@ public class Room  {
     ArrayList<Item> items;
     Player currentPlayer;
     HashMap<String, Integer> doors;
+    HashMap<String, String> symbols;
+    Boolean start;
 
 
 
@@ -33,6 +35,8 @@ public class Room  {
 
     items = new ArrayList<Item>();
     doors = new HashMap<String, Integer>();
+
+
 
  }
 
@@ -46,6 +50,21 @@ public class Room  {
 
 return width;
  }
+
+
+public void  setSymbols (HashMap<String, String> newSymbols) {
+     symbols = newSymbols;
+
+}
+
+public HashMap<String, String> getSymbols () {
+     return symbols;
+}
+
+
+
+
+
 
 
  public void setWidth(int newWidth) {
@@ -140,6 +159,10 @@ public boolean isPlayerInRoom() {
 
 }
 
+public void setStart(Boolean playerStart) {
+    start = playerStart;
+}
+
 
 
 
@@ -151,70 +174,93 @@ public boolean isPlayerInRoom() {
 
        int xVal;
        int yVal;
-       String roomDescription = "";
-       System.out.println("height: " + height);
+       String roomDescription = "<---- [ROOM " + id + "] ---->\n";
+       int flag = 0;
+
+       if (start == true) {
+           roomDescription = roomDescription.concat("-Starting Room \n");
+       }
 
        for (int i = 0; i < height+2; i++ ) {
            for (int j = 0; j < width+2; j++) {
+               if ((i == 1) && (j == 1)) {
+                   roomDescription = roomDescription.concat((symbols.get("PLAYER")));
+               }
 
 
 
 
-               if (i == 0) {
+               else if (i == 0) {
                    if (doors.containsKey("N") == true) {
                        if (j == doors.get("N")) {
-                           roomDescription = roomDescription.concat("+");
+                           roomDescription = roomDescription.concat(symbols.get("DOOR"));
                        }
                        else {
-                           roomDescription = roomDescription.concat("-");
+                           roomDescription = roomDescription.concat(symbols.get("NS_WALL"));
                        }
                    }
                    else {
-                       roomDescription = roomDescription.concat("-");
+                       roomDescription = roomDescription.concat(symbols.get("NS_WALL"));
                    }
                }
                else if (i == height + 1){
                    if (doors.containsKey("S") == true) {
                        if (j == doors.get("S")) {
-                           roomDescription = roomDescription.concat("+");
+                           roomDescription = roomDescription.concat(symbols.get("DOOR"));
                        }
                        else {
-                           roomDescription = roomDescription.concat("-");
+                           roomDescription = roomDescription.concat(symbols.get("NS_WALL"));
                        }
                    }
                    else{
-                       roomDescription = roomDescription.concat("-");
+                       roomDescription = roomDescription.concat(symbols.get("NS_WALL"));
                    }
-            }
-              else {
+               }
+               else {
                    if (j == 0){
                        if (doors.containsKey("E") == true) {
                            if (i == doors.get("E")) {
-                               roomDescription = roomDescription.concat("+");
+                               roomDescription = roomDescription.concat(symbols.get("DOOR"));
                            }
                            else {
-                               roomDescription = roomDescription.concat("|");
+                               roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
                            }
                        }
                        else {
-                           roomDescription = roomDescription.concat("|");
+                           roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
                        }
                    }
                    else if (j == width+1) {
                        if (doors.containsKey("W") == true) {
                            if (i == doors.get("W")) {
-                               roomDescription = roomDescription.concat("+");
+                               roomDescription = roomDescription.concat(symbols.get("DOOR"));
                            }
                            else {
-                               roomDescription = roomDescription.concat("|");
+                               roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
                            }
                        }
                        else {
-                           roomDescription = roomDescription.concat("|");
+                           roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
                        }
                    }
                    else {
-                       roomDescription = roomDescription.concat(".");
+                       if (items.isEmpty() == false) {
+                           for (Item item : items) {
+                               Point point;
+                               point = item.getXyLocation();
+                               if ((j == (int) point.getX()) && (i == (int) point.getY()) && (flag == 0)) {
+                                   roomDescription = roomDescription.concat(symbols.get("ITEM"));
+                                   flag = 1;
+                               }
+                           }
+                           if (flag == 0) {
+                               roomDescription = roomDescription.concat(symbols.get("FLOOR"));
+                           }
+                       } else {
+                           roomDescription = roomDescription.concat(symbols.get("FLOOR"));
+                       }
+                       flag = 0;
+
                    }
                }
 
@@ -223,11 +269,7 @@ public boolean isPlayerInRoom() {
        }
 
 
-       roomDescription.concat("\n");
-       roomDescription.concat("\n");
-       System.out.println(roomDescription);
        return roomDescription;
-     
      
    }
 }

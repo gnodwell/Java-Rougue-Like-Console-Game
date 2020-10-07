@@ -101,12 +101,13 @@ public class A1Solution{
 //        Rogue rogue = new Rogue();
 //        rogue.createRooms(roomFileName);
 
-        Rogue rogue = new Rogue();
-
-        rogue.createRooms(roomFileName);
-        rogue.setSymbols(symbolsFileName);
 
         System.out.println("We have liftoff!");
+        Rogue rogue = new Rogue();
+        rogue.setSymbols(symbolsFileName);
+        rogue.createRooms(roomFileName);
+        System.out.println(rogue.displayAll());
+
     }
 
 

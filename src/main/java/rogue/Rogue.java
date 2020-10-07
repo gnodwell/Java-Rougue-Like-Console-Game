@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.awt.Point;
+import java.util.HashMap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,6 +20,8 @@ public class Rogue{
     ArrayList<Item> allItems = new ArrayList<Item>();
     ArrayList<Room> rooms = new ArrayList<Room>();
     Player currentPlayer = new Player();
+    HashMap<String, String> symbols = new HashMap<String, String>();
+
 
 
 
@@ -27,13 +30,18 @@ public class Rogue{
     }
 
 
-    public void setSymbols(String filename){
+    public void setSymbols(String filename) {
+
+
+
+
 
         JSONParser parser = new JSONParser();
         JSONObject symbolJSON = new JSONObject();
         try {
             Object obj = parser.parse(new FileReader(filename));
             symbolJSON = (JSONObject) obj;
+
 
         } catch(FileNotFoundException e) {
             e.printStackTrace();
@@ -42,6 +50,21 @@ public class Rogue{
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        for (Object obj : (JSONArray) symbolJSON.get("symbols")) {
+
+            JSONObject symbolObj = (JSONObject) obj;
+            String symbolName = symbolObj.get("name").toString();
+            String symbolSymbol = symbolObj.get("symbol").toString();
+            symbols.put(symbolName, symbolSymbol);
+
+
+
+
+
+
+        }
+
 
 
     }
@@ -81,11 +104,11 @@ public class Rogue{
             ArrayList<Item> roomItems = new ArrayList<Item>();
             JSONObject roomObject = (JSONObject)object;
 
-
+            newRoom.setSymbols(symbols);
             newRoom.setWidth(Integer.parseInt(roomObject.get("width").toString()));
             newRoom.setHeight(Integer.parseInt(roomObject.get("height").toString()));
             newRoom.setId(Integer.parseInt(roomObject.get("id").toString()));
-
+            newRoom.setStart(Boolean.parseBoolean(roomObject.get("start").toString()));
 
 
 
@@ -96,8 +119,6 @@ public class Rogue{
                 String doorDir = doorJSON.get("dir").toString();
                 newRoom.setDoor(doorDir, doorId);
 
-                System.out.println("direction " + doorDir);
-                System.out.println("id: " + doorId);
             }
 
 
@@ -112,15 +133,17 @@ public class Rogue{
                 roomItems.add(newItem);
                 allItems.add(newItem);
 
-                System.out.println("itemId:  " + itemId);
-                System.out.println("name: " + itemInfo.get(0));
-                System.out.println("type: " + itemInfo.get(1));
-
-
-
 
 
             }
+
+
+
+
+
+
+
+
             newRoom.setRoomItems(roomItems);
             rooms.add(newRoom);
             newRoom.displayRoom();
@@ -129,17 +152,16 @@ public class Rogue{
         }
 
 
-
-
-
-        System.out.println(filename);
-
-
-
     }
     public String displayAll(){
         //creates a string that displays all the rooms in the dungeon
-        return null;
+        String fullDesc = "";
+        for (Room room: rooms) {
+            fullDesc = fullDesc.concat(room.displayRoom());
+            fullDesc = fullDesc.concat("\n\n");
+        }
+
+        return fullDesc;
     }
 
     private ArrayList getInfo(JSONObject roomJSON, int id) {
