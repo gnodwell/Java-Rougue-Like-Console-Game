@@ -175,7 +175,6 @@ public class RogueParser {
 
         // Make an array list of room information as maps
         for (int i = 0; i < roomsJSONArray.size(); i++) {
-            System.out.println("test" + roomsJSONArray.size());
             try {
                 rooms.add(singleRoom((JSONObject) roomsJSONArray.get(i)));              
             } catch (NullPointerException e) {
@@ -210,21 +209,12 @@ public class RogueParser {
             System.out.println("door array size " + doorArray.size());
             JSONObject doorObj = (JSONObject) doorArray.get(j);
             String dir = String.valueOf(doorObj.get("dir"));
-            System.out.println("dir -- " + dir);
-            System.out.println("index -- " + j);
-            System.out.println(doorArray);
-            System.out.println("test for room -- " + room);
-            System.out.println("id for room -- " + room.get("id"));
 
             room.replace(dir, doorObj.get("wall_pos").toString());
-            System.out.println("test for room after replace -- " + room);
             // room.put(dir, doorObj.get("id").toString());
-            System.out.println("fuck me hard");
             try {
                 room.put(dir.concat("_con_room"), doorObj.get("con_room").toString());
-                System.out.println("fuck me daddy");              
             } catch (NullPointerException e) {
-                System.out.println("shit");
             }
 
         }
@@ -232,8 +222,6 @@ public class RogueParser {
         JSONArray lootArray = (JSONArray) roomJSON.get("loot");
         // Loop through each item and update the hashmap
         for (int j = 0; j < lootArray.size(); j++) {
-            System.out.println("loot array size -- " + lootArray.size());
-            System.out.println("loot array contains -- " + lootArray);
             itemLocations.add(itemPosition((JSONObject) lootArray.get(j), roomJSON.get("id").toString()));
         }
 
