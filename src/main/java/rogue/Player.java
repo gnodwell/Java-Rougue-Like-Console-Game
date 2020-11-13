@@ -26,6 +26,9 @@ constructor.
 @param name  (String) contains the players name
  */
     public Player(String name) {
+        xyLocation = new Point();
+        xyLocation.setLocation(2, 2);
+        this.playerName = name;
     }
 
 

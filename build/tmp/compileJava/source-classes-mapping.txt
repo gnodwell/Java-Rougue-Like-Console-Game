@@ -1,22 +1,22 @@
-rogue/Item.java
- rogue.Item
+rogue/WindowUI.java
+ rogue.WindowUI
 rogue/RogueParser.java
  rogue.RogueParser
 rogue/NoSuchItemException.java
  rogue.NoSuchItemException
-rogue/Player.java
- rogue.Player
+rogue/InvalidMoveException.java
+ rogue.InvalidMoveException
 rogue/ImpossiblePositionException.java
  rogue.ImpossiblePositionException
+rogue/NotEnoughDoorsException.java
+ rogue.NotEnoughDoorsException
+rogue/Item.java
+ rogue.Item
+rogue/Player.java
+ rogue.Player
 rogue/Door.java
  rogue.Door
 rogue/Room.java
  rogue.Room
-rogue/InvalidMoveException.java
- rogue.InvalidMoveException
-rogue/NotEnoughDoorsException.java
- rogue.NotEnoughDoorsException
 rogue/Rogue.java
  rogue.Rogue
-rogue/WindowUI.java
- rogue.WindowUI

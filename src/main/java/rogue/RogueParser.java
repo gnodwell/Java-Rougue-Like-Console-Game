@@ -178,7 +178,7 @@ public class RogueParser {
             try {
                 rooms.add(singleRoom((JSONObject) roomsJSONArray.get(i)));              
             } catch (NullPointerException e) {
-                System.out.println("shitty balls");
+                ;
             }
             numOfRooms += 1;
         }
@@ -202,11 +202,9 @@ public class RogueParser {
         room.put("N", "-1");
         room.put("S", "-1");
         room.put("W", "-1");
-    System.out.println("fuck ytourself");
         // Update the map with any doors in the room
         JSONArray doorArray = (JSONArray) roomJSON.get("doors");
         for (int j = 0; j < doorArray.size(); j++) {
-            System.out.println("door array size " + doorArray.size());
             JSONObject doorObj = (JSONObject) doorArray.get(j);
             String dir = String.valueOf(doorObj.get("dir"));
 
@@ -218,7 +216,6 @@ public class RogueParser {
             }
 
         }
-    System.out.println("test\n");
         JSONArray lootArray = (JSONArray) roomJSON.get("loot");
         // Loop through each item and update the hashmap
         for (int j = 0; j < lootArray.size(); j++) {
@@ -267,14 +264,15 @@ public class RogueParser {
      */
     private Map<String, String>  singleItem(JSONObject itemsJSON) {
 
+        //info
         HashMap<String, String> item = new HashMap<>();
         item.put("id", itemsJSON.get("id").toString());
         item.put("name", itemsJSON.get("name").toString());
         item.put("type", itemsJSON.get("type").toString());
         item.put("description", itemsJSON.get("description").toString());
-
+        
+        //loot
         for (Map<String, String> itemLocation : itemLocations) {
-            System.out.println("itemLocation --  " + itemLocation);
             if (itemLocation.get("id").toString().equals(item.get("id").toString())) {
                 item.put("room", itemLocation.get("room"));
                 item.put("x", itemLocation.get("x"));
@@ -289,3 +287,16 @@ public class RogueParser {
     }
 
 }
+
+/*
+id
+name           ---info
+type
+description
+
+room
+x      ---- loot
+y
+
+*/
+

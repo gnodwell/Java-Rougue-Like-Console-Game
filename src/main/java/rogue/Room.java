@@ -25,7 +25,7 @@ public class Room  {
     private ArrayList<Door> doors;
     private HashMap<String, String> symbols;
     private Boolean start;
-
+    
 
 /**
 default constructor.
@@ -34,8 +34,23 @@ default constructor.
         items = new ArrayList<Item>();
         // doors = new HashMap<String, Integer>();
         doors = new ArrayList<Door>();
+        currentPlayer = null;
     }
 
+
+    public Boolean getStart(){
+        return start;
+    }
+
+    public Door getDoorObject(String direction) {
+        for (Door d: doors) {
+            if (d.getDirection().equals(direction)) {
+                return d;
+            }
+        }
+        
+        return null;
+    }
 
 /**
 returns the width of the room.
@@ -233,7 +248,7 @@ sets the starting position of the player.
 
     public Room getOtherRoom(Door d) {
         
-        return null;
+        return d.getOtherRoom(this);
     }
 
 
@@ -243,17 +258,28 @@ Produces a string that can be printed to produce an ascii rendering of the room 
 */
     public String displayRoom() {
 
-        int xVal;
-        int yVal;
+
         String roomDescription = "<---- [ROOM " + id + "] ---->\n";
         int flag = 0;
-
+        
+        int pX = 1;
+        int pY = 1;
+        if (currentPlayer != null) {
+            Point p = currentPlayer.getXyLocation();
+            //p.setLocation(4, 4);
+            pX = (int)p.getX();
+            pY = (int)p.getY();
+               
+        }
+        
         if (start) {
             roomDescription = roomDescription.concat("-Starting Room \n");
+        } else {
+            roomDescription = roomDescription.concat("               \n");
         }
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if ((i == 1) && (j == 1)) {
+                if ((i == pY) && (j == pX)) {
                     roomDescription = roomDescription.concat((symbols.get("PLAYER")));
                 } else if (i == 0) {
                     if (containsDoorKey("N")) {
@@ -277,16 +303,6 @@ Produces a string that can be printed to produce an ascii rendering of the room 
                     }
                 } else {
                     if (j == 0) {
-                        if (containsDoorKey("E")) {
-                            if (i == getDoor("E")) {
-                                roomDescription = roomDescription.concat(symbols.get("DOOR"));
-                            } else {
-                                roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
-                            }
-                        } else {
-                            roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
-                        }
-                    } else if (j == width - 1) {
                         if (containsDoorKey("W")) {
                             if (i == getDoor("W")) {
                                 roomDescription = roomDescription.concat(symbols.get("DOOR"));
@@ -296,8 +312,18 @@ Produces a string that can be printed to produce an ascii rendering of the room 
                         } else {
                             roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
                         }
+                    } else if (j == width - 1) {
+                        if (containsDoorKey("E")) {
+                            if (i == getDoor("E")) {
+                                roomDescription = roomDescription.concat(symbols.get("DOOR"));
+                            } else {
+                                roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
+                            }
+                        } else {
+                            roomDescription = roomDescription.concat(symbols.get("EW_WALL"));
+                        }
                     } else {
-                        if (items.isEmpty()) {
+                        if (!items.isEmpty()) {
                             for (Item item : items) {
                                 Point point;
                                 point = item.getXyLocation();
@@ -326,7 +352,7 @@ Produces a string that can be printed to produce an ascii rendering of the room 
 
 
 
-    public void addItem(Item toAdd) throws ImpossiblePositionException, NoSuchItemException   {
+    public void addItem(Item toAdd) throws ImpossiblePositionException { /* Handle NoSuchItemException */
 
         Point xyLoc = toAdd.getXyLocation();
         int xLoc = (int)xyLoc.getX();
@@ -334,27 +360,23 @@ Produces a string that can be printed to produce an ascii rendering of the room 
         int catcher = 0;
 
         
-        if (xLoc == 0 || xLoc == this.getWidth() || yLoc == 0 || yLoc == this.getHeight()) {
+        if (xLoc == 0 || xLoc == this.getWidth()-1 || yLoc == 0 || yLoc == this.getHeight()-1) {
             throw new ImpossiblePositionException();
         }
-        
+
+        if (currentPlayer != null) { /* Change */
+            if (currentPlayer.getXyLocation().equals(xyLoc)) {
+                throw new ImpossiblePositionException();
+            }   
+        }
+
         for (Item it: items) {
             if (xyLoc.equals(it.getXyLocation())) {
                 throw new ImpossiblePositionException();
             }
-            if (it.getId() == toAdd.getId()) {
-                catcher = 1;
-            }
-            if (catcher != 1) {
-                throw new NoSuchItemException("Item does not exist");
-            }
         }
 
-        // if (xyLoc.equals(currentPlayer.getXyLocation())) {
-        //     System.out.println("hmmmmm");
-        //     throw new ImpossiblePositionException();
-        // }
-
+        
 
         items.add(toAdd);
     }
