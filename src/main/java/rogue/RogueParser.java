@@ -176,9 +176,9 @@ public class RogueParser {
         // Make an array list of room information as maps
         for (int i = 0; i < roomsJSONArray.size(); i++) {
             try {
-                rooms.add(singleRoom((JSONObject) roomsJSONArray.get(i)));              
+                rooms.add(singleRoom((JSONObject) roomsJSONArray.get(i)));
             } catch (NullPointerException e) {
-                ;
+                System.out.println("came across null pointer when trying to parse room");
             }
             numOfRooms += 1;
         }
@@ -270,7 +270,7 @@ public class RogueParser {
         item.put("name", itemsJSON.get("name").toString());
         item.put("type", itemsJSON.get("type").toString());
         item.put("description", itemsJSON.get("description").toString());
-        
+
         //loot
         for (Map<String, String> itemLocation : itemLocations) {
             if (itemLocation.get("id").toString().equals(item.get("id").toString())) {

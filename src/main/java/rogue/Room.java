@@ -25,7 +25,7 @@ public class Room  {
     private ArrayList<Door> doors;
     private HashMap<String, String> symbols;
     private Boolean start;
-    
+
 
 /**
 default constructor.
@@ -37,18 +37,27 @@ default constructor.
         currentPlayer = null;
     }
 
-
-    public Boolean getStart(){
+/**
+gets the starting room.
+@return start (Boolean) returns true if the room is the starting room and false if it is not
+ */
+    public Boolean getStart() {
         return start;
     }
 
+
+/**
+gets the door on a certain wall.
+@param direction (String) what wall you are looking for the door on
+@return d (Door) returns the door object on that wall if found, else returns null
+ */
     public Door getDoorObject(String direction) {
         for (Door d: doors) {
             if (d.getDirection().equals(direction)) {
                 return d;
             }
         }
-        
+
         return null;
     }
 
@@ -60,6 +69,10 @@ returns the width of the room.
         return width;
     }
 
+
+/**
+gets the list of doors.
+@return doors (Door) returns a list of door objects */
     public ArrayList<Door> getDoorList() {
         return doors;
     }
@@ -109,7 +122,7 @@ sets the height of the new room.
 
 
 /**
-gets id of the room
+gets id of the room.
 @return id (int) id of the room
  */
     public int getId() {
@@ -118,7 +131,7 @@ gets id of the room
 
 
 /**
-sets the id of the room
+sets the id of the room.
 @param newId (int) room id
  */
     public void setId(int newId) {
@@ -175,8 +188,8 @@ gets the doors location.
                 return door.getLocation();
             }
         }
-        
-        return -1; 
+
+        return -1;
     }
 
 /*
@@ -184,8 +197,11 @@ direction is one of NSEW.
 location is a number between 0 and the length of the wall
 */
 
-
-public void setDoorConnection( String direction, Integer doorConnection) {
+/**
+sets the door connections.
+@param direction (String) which direction the door is on
+@param doorConnection (Integer) id of the room the door is connection to */
+public void setDoorConnection(String direction, Integer doorConnection) {
     for (Door d: doors) {
         if (d.getDirection().equals(direction)) {
             d.setConnectedTo(doorConnection);
@@ -245,9 +261,12 @@ sets the starting position of the player.
     }
 
 
-
+/**
+gets the other room that the door is connected to.
+@param d (door) what door you are looking for the connection
+@return d.getOtherRoom(this) (Door) returns the linked room to the one you are currently in */
     public Room getOtherRoom(Door d) {
-        
+
         return d.getOtherRoom(this);
     }
 
@@ -261,17 +280,17 @@ Produces a string that can be printed to produce an ascii rendering of the room 
 
         String roomDescription = "<---- [ROOM " + id + "] ---->\n";
         int flag = 0;
-        
+
         int pX = 1;
         int pY = 1;
         if (currentPlayer != null) {
             Point p = currentPlayer.getXyLocation();
             //p.setLocation(4, 4);
-            pX = (int)p.getX();
-            pY = (int)p.getY();
-               
+            pX = (int) p.getX();
+            pY = (int) p.getY();
+
         }
-        
+
         if (start) {
             roomDescription = roomDescription.concat("-Starting Room \n");
         } else {
@@ -351,23 +370,27 @@ Produces a string that can be printed to produce an ascii rendering of the room 
 
 
 
-
+/**
+adds item that has been parsed to an array list of items.
+@param toAdd (Item) contains the items to be added that have been parsed form RougueParser
+@throws ImpossiblePositionException thrown when the position is impossible for the player to be in
+ */
     public void addItem(Item toAdd) throws ImpossiblePositionException { /* Handle NoSuchItemException */
 
         Point xyLoc = toAdd.getXyLocation();
-        int xLoc = (int)xyLoc.getX();
-        int yLoc = (int)xyLoc.getY();
+        int xLoc = (int) xyLoc.getX();
+        int yLoc = (int) xyLoc.getY();
         int catcher = 0;
 
-        
-        if (xLoc == 0 || xLoc == this.getWidth()-1 || yLoc == 0 || yLoc == this.getHeight()-1) {
+
+        if (xLoc == 0 || xLoc == this.getWidth() - 1 || yLoc == 0 || yLoc == this.getHeight() - 1) {
             throw new ImpossiblePositionException();
         }
 
         if (currentPlayer != null) { /* Change */
             if (currentPlayer.getXyLocation().equals(xyLoc)) {
                 throw new ImpossiblePositionException();
-            }   
+            }
         }
 
         for (Item it: items) {
@@ -376,7 +399,7 @@ Produces a string that can be printed to produce an ascii rendering of the room 
             }
         }
 
-        
+
 
         items.add(toAdd);
     }

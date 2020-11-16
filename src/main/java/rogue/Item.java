@@ -29,7 +29,7 @@ setters.
 @param name  (String)  name of the item to be added
 @param type   (String)  type of item (i.e consumable, equipment)
 @param xyLocation   (Point)   x,y coordinates of the item in the room
-@param description (String) description of the item
+@param itemDescription (String) description of the item
 */
     public Item(int id, String name, String type, Point xyLocation, String itemDescription) {
         setId(id);

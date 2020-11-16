@@ -1,6 +1,10 @@
 package rogue;
 
+
 public class ImpossiblePositionException extends Exception {
+/**
+this is throw when you are tring to access a location that is not inside the boundaries of the room.
+ */
     public ImpossiblePositionException() {
         super("Item is not in the Room boundaries");
     }
