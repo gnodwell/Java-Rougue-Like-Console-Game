@@ -2,9 +2,9 @@ package rogue;
 
 import java.util.HashMap;
 
+import java.io.Serializable;
 
-
-public class Inventory {
+public class Inventory implements Serializable {
 
     private HashMap<Integer, Item> inventory;
 

@@ -2,10 +2,13 @@ package rogue;
 // import java.util.ArrayList;
 import java.awt.Point;
 import java.util.ArrayList;
+
+import java.io.Serializable;
+
 /**
  * The player character.
  */
-public class Player {
+public class Player implements Serializable {
     private String playerAutoAssign;
     private String playerName;
     private String playerRole;

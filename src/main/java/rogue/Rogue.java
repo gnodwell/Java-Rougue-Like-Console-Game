@@ -14,6 +14,7 @@ import java.util.HashMap;
 // import java.io.IOException;
 
 import java.awt.Point;
+import java.io.Serializable;
 // import java.nio.charset.MalformedInputException;
 
 // import org.json.simple.JSONArray;
@@ -24,7 +25,7 @@ import java.awt.Point;
 /**
  * creates the game.
  */
-public class Rogue {
+public class Rogue implements Serializable {
     public static final char UP = 'h';
     public static final char DOWN = 'l';
     public static final char LEFT = 'j';
@@ -70,6 +71,9 @@ public class Rogue {
     }
 
 
+    /**
+     * default constructor.
+     */
     public Rogue() {
         playerInv = new Inventory();
         myRooms = new ArrayList<Room>();
@@ -556,7 +560,7 @@ gets new postiong after a move has been made.
 
 
     /**
-     * adds items to rooms
+     * adds items to rooms.
      * @param rand random number generator
      * @param newItem item being added to the room
      * @param roomId current room

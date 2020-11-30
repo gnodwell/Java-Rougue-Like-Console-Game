@@ -14,15 +14,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class RogueParser {
+import java.io.Serializable;
+
+public class RogueParser implements Serializable {
 
     private ArrayList<Map<String, String>> rooms = new ArrayList<>();
     private ArrayList<Map<String, String>> items = new ArrayList<>();
     private ArrayList<Map<String, String>> itemLocations = new ArrayList<>();
     private HashMap<String, Character> symbols = new HashMap<>();
 
-    private Iterator<Map<String, String>> roomIterator;
-    private Iterator<Map<String, String>> itemIterator;
+    private transient Iterator<Map<String, String>> roomIterator;
+    private transient Iterator<Map<String, String>> itemIterator;
 
     private int numOfRooms = -1;
     private int numOfItems = -1;

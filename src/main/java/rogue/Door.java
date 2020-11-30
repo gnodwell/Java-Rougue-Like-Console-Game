@@ -3,8 +3,10 @@ package rogue;
 
 import java.util.ArrayList;
 
+import java.io.Serializable;
 
-public class Door {
+
+public class Door implements Serializable {
 
     private ArrayList<Room> rooms;
     private String dir;
@@ -24,6 +26,9 @@ construction.
 
     }
 
+    /**
+     * default constructor.
+     */
     public Door() {
         rooms = new ArrayList<Room>();
     }

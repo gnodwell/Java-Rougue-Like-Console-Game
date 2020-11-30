@@ -37,12 +37,20 @@ import javax.swing.border.EtchedBorder;
 // import java.awt.BorderLayout;
 // import javax.swing.JComponent;
 import javax.swing.JList;
+
+import java.io.Serializable;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+// import java.io.IOException;
+
 // import java.awt.event.ActionEvent;
 // import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 
-public class WindowUI extends JFrame {
+public class WindowUI extends JFrame implements Serializable {
 
 
     private SwingTerminal terminal;
@@ -85,6 +93,8 @@ public class WindowUI extends JFrame {
 
     private static final int THIRTY = 30;
     private static final int ONEHUNDRED = 100;
+    private static JMenuItem saveItem;
+    private static JMenuItem loadItem;
 
 /**
 Constructor.
@@ -225,10 +235,10 @@ Constructor.
         JMenuItem openItem = new JMenuItem("Open JSON");
         fileMenu.add(openItem);
         // add listener that will open and parse a new JSON file
-        JMenuItem loadItem = new JMenuItem("Load Game");
+        loadItem = new JMenuItem("Load Game");
         fileMenu.add(loadItem);
         // add listener that will load a prviously saved game
-        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem = new JMenuItem("Save");
         fileMenu.add(saveItem);
         // add listener that will save the game
         JMenuItem playerItem = new JMenuItem("Change Name");
@@ -525,9 +535,16 @@ The controller method for making the game logic work.
 
     theGameUI.listenSetPlayer(theGame);
     theGameUI.setPlayerDisplay(theGame);
+    saveItem.addActionListener(ev -> {
+        saveGame(theGame); });
 
     while (userInput != 'q') {
     //get input from the user
+
+    loadItem.addActionListener(ev -> {
+        loadGame(theGame, theGameUI);
+    });
+
     theGameUI.listenSetPlayer(theGame);
     theGameUI.setPlayerDisplay(theGame);
 
@@ -548,6 +565,50 @@ The controller method for making the game logic work.
     }
     }
 
+    }
+
+
+    /**
+     * saves the game.
+     * @param theGame
+     */
+    public static void saveGame(Rogue theGame) {
+        String fileName = "samepleFileName";
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(fileName);
+            ObjectOutputStream outputDest = new ObjectOutputStream(outputStream);
+            outputDest.writeObject(theGame);
+            outputDest.close();
+            outputStream.close();
+            System.out.println("the object we are saving has been serialized");
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+    }
+
+
+    /**
+     * laods the game.
+     * @param theGame
+     * @param theGameUI
+     */
+    public static void loadGame(Rogue theGame, WindowUI theGameUI) {
+        Rogue loadedGame = null;
+        String fileName = "samepleFileName";
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)); ) {
+            loadedGame = (Rogue) in.readObject();
+            System.out.println("the object has been deserialized and loaded into mem");
+        } catch (IOException ex) {
+            System.out.println("IOException is caught " + ex);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException is caught " + ex);
+        }
+        theGame = null;
+        theGame = loadedGame;
+        theGameUI.draw("test", theGame.getNextDisplay());
+
+        // return loadedGame;
     }
 
 }

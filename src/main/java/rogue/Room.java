@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.awt.Point;
 import java.util.HashMap;
 
+import java.io.Serializable;
+
 
 /**
  * doors out, etc.
@@ -14,7 +16,7 @@ import java.util.HashMap;
  *
  *
  */
-public class Room  {
+public class Room implements Serializable {
 
     private int width;
     private int height;
@@ -25,6 +27,21 @@ public class Room  {
     // private ArrayList<Door> doors;
     private HashMap<String, String> symbols;
     private Boolean start;
+    private static final int ONE = 1;
+    private static final int TWO = 2;
+    private static final int THREE = 3;
+    private static final int FOUR = 4;
+    private static final int FIVE = 5;
+    private static final int SIX = 6;
+    private static final int SEVEN = 7;
+    private static final int EIGHT = 8;
+    private static final int NINE = 9;
+    private static final int TEN = 10;
+    private static final int ELEVEN = 11;
+    private static final int TWELVE = 12;
+    private static final int THIRTEEN = 13;
+    private static final int FOURTEEN = 14;
+    private static final int FIFTEEN = 15;
 
 
 /**
@@ -101,6 +118,11 @@ gets the list of doors.
         return -1;
     }
 
+    /**
+     * verifies the doors in the room.
+     * @return true if it is verified
+     * @throws NotEnoughDoorsException
+     */
     public boolean verifyRoom() throws NotEnoughDoorsException {
         if (!doorsHash.isEmpty()) {
             return true;
@@ -416,8 +438,9 @@ Produces a string that can be printed to produce an ascii rendering of the room 
 adds item that has been parsed to an array list of items.
 @param toAdd (Item) contains the items to be added that have been parsed form RougueParser
 @throws ImpossiblePositionException thrown when the position is impossible for the player to be in
+@throws NoSuchItemException thrown when trying to add an item that does not exist
  */
-    public void addItem(Item toAdd) throws ImpossiblePositionException, NoSuchItemException { /* Handle NoSuchItemException */
+    public void addItem(Item toAdd) throws ImpossiblePositionException, NoSuchItemException {
 
         Point xyLoc = toAdd.getXyLocation();
         int xLoc = (int) xyLoc.getX();
@@ -435,11 +458,12 @@ adds item that has been parsed to an array list of items.
             }
         }
 
-        int[] idList = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int[] idList = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT,
+            NINE, TEN, ELEVEN, TWELVE, THIRTEEN, FOURTEEN, FIFTEEN};
         int match = 0;
         for (int i: idList) {
             if (i == toAdd.getId()) {
-                match =1;
+                match = 1;
             }
         }
         if (match == 0) {
