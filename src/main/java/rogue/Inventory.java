@@ -3,6 +3,7 @@ package rogue;
 import java.util.HashMap;
 
 
+
 public class Inventory {
 
     private HashMap<Integer, Item> inventory;

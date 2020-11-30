@@ -143,3 +143,12 @@ returns the players chosen gender.
         return playerGender;
     }
 }
+
+
+
+    // public void pickUp() {
+
+    // }
+
+
+

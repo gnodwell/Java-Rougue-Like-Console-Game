@@ -14,6 +14,9 @@ public class Item  {
     private Character chr;
     private String itemDesc;
     private String description;
+    private boolean canEat;
+    private boolean canWear;
+    private boolean canThrow;
 
 
 /**
@@ -163,5 +166,26 @@ sets the current room.
  */
     public void setCurrentRoom(Room newCurrentRoom) {
         currentRoom = newCurrentRoom;
+    }
+
+    /**
+     * @return wether an item can be worn.
+     */
+    public Boolean getCanWear() {
+        return canWear;
+    }
+
+    /**
+     * @return wether an item can be thrown.
+     */
+    public Boolean getCanThrow() {
+        return canThrow;
+    }
+
+    /**
+     * @return wether an item can be ate.
+     */
+    public Boolean getCanEat() {
+        return canEat;
     }
 }

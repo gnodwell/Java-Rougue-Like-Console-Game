@@ -72,77 +72,79 @@ gets the list of doors.
 // public ArrayList<Door> getDoorList() {
 //     return doors;
 // }
-public HashMap<String, Door> getDoorHash() {
-    return doorsHash;
-}
-
-
-/**
-gets the doors location.
- * @param direction (String) contains which wall the door is on
- * @return doors.get(direction.toUpperCase()) (int) returns location on the wall
- */
-public int getDoor(String direction) {
-    // return doors.get(direction.toUpperCase()); //change this, no longer hash map
-
-    // for (Door door: doors) {
-    //     if (door.getDirection().equals(direction)) {
-    //         return door.getLocation();
-    //     }
-    // }
-
-    if (doorsHash.containsKey(direction)) {
-        Door d = doorsHash.get(direction);
-        return d.getLocation();
+    public HashMap<String, Door> getDoorHash() {
+        return doorsHash;
     }
 
-    return -1;
-}
-
-
-/**
-sets the door connections.
-@param direction (String) which direction the door is on
-@param doorConnection (Integer) id of the room the door is connection to */
-public void setDoorConnection(String direction, Integer doorConnection) {
-    // for (Door d: doors) {
-    //     if (d.getDirection().equals(direction)) {
-    //         d.setConnectedTo(doorConnection);
-    //     }
-    // }
-
-    Door d = doorsHash.get(direction);
-    d.setConnectedTo(doorConnection);
 
 
 
-}
+    /**
+    gets the doors location.
+    * @param direction (String) contains which wall the door is on
+    * @return doors.get(direction.toUpperCase()) (int) returns location on the wall
+    */
+    public int getDoor(String direction) {
+        // return doors.get(direction.toUpperCase()); //change this, no longer hash map
+
+        // for (Door door: doors) {
+        //     if (door.getDirection().equals(direction)) {
+        //         return door.getLocation();
+        //     }
+        // }
+
+        if (doorsHash.containsKey(direction)) {
+            Door d = doorsHash.get(direction);
+            return d.getLocation();
+        }
+
+        return -1;
+    }
+
+    public boolean verifyRoom() throws NotEnoughDoorsException {
+        if (!doorsHash.isEmpty()) {
+            return true;
+        } else {
+            // return false;
+            throw new NotEnoughDoorsException();
+        }
+    }
 
 
-/**
-sets the doors information.
-@param direction (String) contains which wall the door is on
-@param location (int) contains where the door is
- */
-public void setDoor(String direction, int location) {
-    // doors.put(direction.toUpperCase(), );
-    Door door = new Door(direction, location);
-    // doors.add(door);
-    doorsHash.put(direction.toUpperCase(), door);
-
-}
+    /**
+    sets the door connections.
+    @param direction (String) which direction the door is on
+    @param doorConnection (Integer) id of the room the door is connection to */
+    public void setDoorConnection(String direction, Integer doorConnection) {
+        Door d = doorsHash.get(direction);
+        d.setConnectedTo(doorConnection);
+    }
 
 
-private Boolean containsDoorKey(String dir) {
-    // for (Door d: doors) {
-    //     if (d.getDirection().equals(dir)) {
-    //         return true;
-    //     }
-    // }
-    // return false;
+    /**
+    sets the doors information.
+    @param direction (String) contains which wall the door is on
+    @param location (int) contains where the door is
+    */
+    public void setDoor(String direction, int location) {
+        // doors.put(direction.toUpperCase(), );
+        Door door = new Door(direction, location);
+        // doors.add(door);
+        doorsHash.put(direction.toUpperCase(), door);
 
-    return (doorsHash.containsKey(dir));
-}
+    }
+
+
+    private Boolean containsDoorKey(String dir) {
+        // for (Door d: doors) {
+        //     if (d.getDirection().equals(dir)) {
+        //         return true;
+        //     }
+        // }
+        // return false;
+
+        return (doorsHash.containsKey(dir));
+    }
 
 
 
@@ -415,7 +417,7 @@ adds item that has been parsed to an array list of items.
 @param toAdd (Item) contains the items to be added that have been parsed form RougueParser
 @throws ImpossiblePositionException thrown when the position is impossible for the player to be in
  */
-    public void addItem(Item toAdd) throws ImpossiblePositionException { /* Handle NoSuchItemException */
+    public void addItem(Item toAdd) throws ImpossiblePositionException, NoSuchItemException { /* Handle NoSuchItemException */
 
         Point xyLoc = toAdd.getXyLocation();
         int xLoc = (int) xyLoc.getX();
@@ -432,6 +434,18 @@ adds item that has been parsed to an array list of items.
                 throw new ImpossiblePositionException();
             }
         }
+
+        int[] idList = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+        int match = 0;
+        for (int i: idList) {
+            if (i == toAdd.getId()) {
+                match =1;
+            }
+        }
+        if (match == 0) {
+            throw new NoSuchItemException();
+        }
+
 
         for (Item it: items) {
             if (xyLoc.equals(it.getXyLocation())) {

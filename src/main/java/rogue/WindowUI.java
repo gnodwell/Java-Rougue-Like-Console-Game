@@ -8,6 +8,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.TerminalPosition;
 
 import java.util.HashMap;
+// import java.util.zip.CheckedInputStream;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -17,7 +18,7 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import java.awt.FlowLayout;
+// import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
@@ -27,17 +28,17 @@ import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ListSelectionListener;
+// import javax.swing.event.ListSelectionListener;
 
 
 
 
-import java.awt.Color;
-import java.awt.BorderLayout;
-import javax.swing.JComponent;
+// import java.awt.Color;
+// import java.awt.BorderLayout;
+// import javax.swing.JComponent;
 import javax.swing.JList;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 
@@ -51,22 +52,39 @@ public class WindowUI extends JFrame {
     // Screen buffer dimensions are different than terminal dimensions
     public static final int COLS = 90;
     public static final int ROWS = 54;
-   private final char startCol = 0;
-   private final char msgRow = 1;
-   private final char roomRow = 5;
-   private Container contentPane;
-   
-   
-   private static JPanel labelPanel = new JPanel();
-   
-   /* Inventory */ 
-   private static JPanel invPanel = new JPanel();
-   private static JList<Item> invList = new JList<>();
-   private static DefaultListModel<Item> invModel = new DefaultListModel<>();
+    private final char startCol = 0;
+    private final char msgRow = 1;
+    private final char roomRow = 5;
+    private Container contentPane;
+    private static JPanel labelPanel = new JPanel();
 
-   private ArrayList<Item> uniqueItems = new ArrayList<>();
+   /* Inventory */
+    private static JPanel invPanel = new JPanel(); //change it back from static
+    private static JList<Item> invList = new JList<>();
+    private static DefaultListModel<Item> invModel = new DefaultListModel<>();
 
+    private ArrayList<Item> uniqueItems = new ArrayList<>();
 
+    private  JList<Item> edibleList = new JList();
+    private ArrayList<Item> uniqueEdibles = new ArrayList<>();
+    private  DefaultListModel<Item> edibleModel = new DefaultListModel<>();
+
+    private  JList<Item> wearableList = new JList();
+    private ArrayList<Item> uniqueWearables = new ArrayList<>();
+    private  DefaultListModel<Item> wearableModel = new DefaultListModel<>();
+
+    private  JList<Item> tossableList = new JList();
+    private ArrayList<Item> uniqueTossables = new ArrayList<>();
+    private  DefaultListModel<Item> tossableModel = new DefaultListModel<>();
+
+    // private JTextField playerField = new JTextField(30); //commented thius out idk if it breaks
+    private JTextField playerField = new JTextField();
+
+    private JButton nameSubmit = new JButton("Submit");
+    private JTextField playerSubmit = new JTextField("Enter Text Here");
+
+    private static final int THIRTY = 30;
+    private static final int ONEHUNDRED = 100;
 
 /**
 Constructor.
@@ -106,42 +124,96 @@ Constructor.
     private void setUpLabelPanel() {
         Border prettyLine = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         labelPanel.setBorder(prettyLine);
-        JLabel exampleLabel = new JLabel("Tomorrow and tomorrow and tomorrow");
+
+
+        JLabel exampleLabel = new JLabel("Player Name");
         labelPanel.add(exampleLabel);
         // JTextField dataEntry = new JTextField("Enter text here", 25);
-        JTextField dataEntry = new JTextField("Enter text here");
-        labelPanel.add(dataEntry);
-        JButton clickMe = new JButton("Click Me");
-        labelPanel.add(clickMe);
+        labelPanel.add(playerSubmit);
+
+
+        labelPanel.add(nameSubmit);
+
         contentPane.add(labelPanel, BorderLayout.SOUTH);
     }
 
 
     private void setUpInventoryPanel() {
         Border prettyLine = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-        
-        
-        invList.setModel(invModel);
 
-        invList.setFixedCellHeight(30);
-        invList.setFixedCellWidth(100);
+
+        invList.setModel(invModel);
+        invList.setFixedCellHeight(THIRTY);
+        invList.setFixedCellWidth(ONEHUNDRED);
 
         invList.setCellRenderer(new InventoryRenderer());
-        
+
         invPanel.setBorder(prettyLine);
-     
+
         invPanel.add(invList);
-        
+
         contentPane.add(invPanel, BorderLayout.EAST);
 
-        invList.getSelectionModel().addListSelectionListener(e-> {
-            Item selectedItem = (Item)invList.getSelectedValue();
-            String message = "Item Name : " + selectedItem.getName() + "\nItem Descriton : " + selectedItem.getDescription();
-            JOptionPane.showMessageDialog(invPanel, message);
+        // change it to single responsibilty
+        invList.getSelectionModel().addListSelectionListener(e -> {
+            Item selectedItem = (Item) invList.getSelectedValue();
+            if (selectedItem != null) {
+                String message = "Item Name : " + selectedItem.getName()
+                + "\nItem Descriton : " + selectedItem.getDescription();
+                String[] options = {"Eat", "Wear", "Toss"};
+                int optionChosen = JOptionPane.showOptionDialog(invPanel, message, "Options for "
+                + selectedItem.getName(), JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, options, null);
+                handleETW(optionChosen, selectedItem);
 
+            }
 
         });
     }
+
+    private void handleETW(int option, Item chosenItem) {
+        switch (option) {
+            case 0:
+            Class e = chosenItem.getClass();
+            if (!chosenItem.getCanEat()) {
+                System.out.println("Not edible");
+                JOptionPane.showMessageDialog(invPanel, "The item is not edible !");
+            } else {
+                //EAT
+                invModel.removeElement(chosenItem);
+                edibleModel.removeElement(chosenItem);
+            }
+            break;
+
+            case 1:
+            Class w = chosenItem.getClass();
+            if (!chosenItem.getCanWear()) {
+                System.out.println("Not wearable");
+                JOptionPane.showMessageDialog(invPanel, "The item is not wearable !");
+            } else {
+                //WEAR
+                invModel.removeElement(chosenItem);
+                wearableModel.removeElement(chosenItem);
+            }
+            break;
+
+            case 2:
+            Class t = chosenItem.getClass();
+            if (!chosenItem.getCanThrow()) {
+                System.out.println("Not tossable");
+                JOptionPane.showMessageDialog(invPanel, "The item is not tossable !");
+            } else {
+                //TOSS
+                invModel.removeElement(chosenItem);
+                tossableModel.removeElement(chosenItem);
+            }
+            break;
+            default:
+            break;
+
+        }
+    }
+
 
 
 
@@ -258,15 +330,11 @@ keys to the equivalent movement keys in rogue.
     }
 
 
-    private void addToInventory (Rogue theGame) {
-        
-        
+    private void addToInventory(Rogue theGame) {
+
         HashMap<Integer, Item> currentInventory = null;
         currentInventory = theGame.getInventory();
-        // for (Item item: currentInventory.values()) {
-        //     System.out.println("Teheeee : " + item.getDescription());
-        // }
-        
+
         if (currentInventory.isEmpty()) {
             return;
         } else {
@@ -275,14 +343,162 @@ keys to the equivalent movement keys in rogue.
                     uniqueItems.add(item);
                     invModel.addElement(item);
                 }
-                
-                System.out.println("Description : " + item.getDescription());
-
-            }   
-
+            }
         }
-    
-        
+    }
+
+    private void checkInventoryAction(char input, Rogue theGame) {
+        switch (input) {
+            case 'e':
+            displayEdbileList(theGame);
+            break;
+
+            case 'w':
+            displayWearableList(theGame);
+            break;
+
+            case 't':
+            displayTossableList(theGame);
+            break;
+            default:
+            break;
+        }
+
+        return;
+    }
+
+
+    private void displayTossableList(Rogue theGame) {
+        HashMap<Integer, Item> currentInventory = null;
+        currentInventory = theGame.getInventory();
+        tossableList.setModel(tossableModel);
+        tossableList.setCellRenderer(new InventoryRenderer());
+        if (currentInventory.isEmpty()) {
+            return;
+        } else {
+            for (Item item: currentInventory.values()) {
+                if (uniqueTossables.indexOf(item) == -1 && item.getCanThrow()) {
+                    uniqueTossables.add(item);
+                    tossableModel.addElement(item);
+                }
+            }
+        }
+        tossableList.getSelectionModel().addListSelectionListener(e -> {
+            Item selectedItem = (Item) tossableList.getSelectedValue();
+            if (selectedItem != null) {
+                String message = "Item Name : " + selectedItem.getName()
+                + "\nItem Descriton : " + selectedItem.getDescription();
+                System.out.println("LOOL" + message);
+                invModel.removeElement(selectedItem);
+                tossableModel.removeElement(selectedItem);
+                removeTossableItem(selectedItem, theGame);
+            }
+            System.out.println(selectedItem);
+        });
+        JOptionPane.showMessageDialog(null, tossableList, "Tossable Items", JOptionPane.PLAIN_MESSAGE);
+    }
+
+
+    private void removeTossableItem(Item theItem, Rogue myGame) {
+        Room itemRoom = theItem.getCurrentRoom();
+        ArrayList<Item> roomItems = itemRoom.getRoomItems();
+
+        ArrayList<Room> gameRooms = myGame.getRooms();
+
+        for (Room r: gameRooms) {
+            if (r == itemRoom) {
+                roomItems.add(theItem);
+                r.setRoomItems(roomItems);
+                break;
+            }
+        }
+
+        myGame.setRooms(gameRooms);
+
+    }
+
+
+
+    private void displayWearableList(Rogue theGame) {
+        HashMap<Integer, Item> currentInventory = null;
+        currentInventory = theGame.getInventory();
+        wearableList.setModel(wearableModel);
+        wearableList.setCellRenderer(new InventoryRenderer());
+        if (currentInventory.isEmpty()) {
+            return;
+        } else {
+            for (Item item: currentInventory.values()) {
+                if (uniqueWearables.indexOf(item) == -1 && item.getCanWear()) {
+                    uniqueWearables.add(item);
+                    wearableModel.addElement(item);
+                }
+            }
+        }
+        wearableList.getSelectionModel().addListSelectionListener(e -> {
+            Item selectedItem = (Item) wearableList.getSelectedValue();
+            if (selectedItem != null) {
+                String message = "Item Name : " + selectedItem.getName()
+                + "\nItem Descriton : " + selectedItem.getDescription();
+                System.out.println("LOOL" + message);
+                //WEAR
+                invModel.removeElement(selectedItem);
+                wearableModel.removeElement(selectedItem);
+            }
+            System.out.println(selectedItem);
+        });
+        JOptionPane.showMessageDialog(null, wearableList, "Wearable Items", JOptionPane.PLAIN_MESSAGE);
+    }
+
+
+    private void displayEdbileList(Rogue theGame) {
+
+        HashMap<Integer, Item> currentInventory = null;
+        currentInventory = theGame.getInventory();
+        edibleList.setModel(edibleModel);
+        edibleList.setCellRenderer(new InventoryRenderer());
+        if (currentInventory.isEmpty()) {
+            return;
+        } else {
+            for (Item item: currentInventory.values()) {
+                if (uniqueEdibles.indexOf(item) == -1 && item.getCanEat()) {
+                    uniqueEdibles.add(item);
+                    edibleModel.addElement(item);
+                }
+            }
+        }
+
+        edibleList.getSelectionModel().addListSelectionListener(e -> {
+            Item selectedItem = (Item) edibleList.getSelectedValue();
+            if (selectedItem != null) {
+                String message = "Item Name : " + selectedItem.getName()
+                + "\nItem Descriton : " + selectedItem.getDescription();
+                System.out.println("LOOL" + message);
+                //EAT
+                invModel.removeElement(selectedItem);
+                edibleModel.removeElement(selectedItem);
+            }
+            System.out.println(selectedItem);
+        });
+
+        JOptionPane.showMessageDialog(null, edibleList, "Edible Items", JOptionPane.PLAIN_MESSAGE);
+    }
+
+
+    private void setPlayerDisplay(Rogue theGame) {
+        labelPanel.add(playerField);
+        playerField.setText("Player name is : " + theGame.getPlayer().getName());
+    }
+
+    private void listenSetPlayer(Rogue theGame) {
+        nameSubmit.addActionListener(e -> {
+            String submittedText = playerSubmit.getText();
+            if (!submittedText.toString().equals("Enter Text Here")) {
+                Player currentPlayer = theGame.getPlayer();
+                System.out.println(submittedText);
+                currentPlayer.setName(submittedText);
+                theGame.setPlayer(currentPlayer);
+            }
+        });
     }
 
 /**
@@ -307,10 +523,14 @@ The controller method for making the game logic work.
     theGameUI.draw(message, theGame.getNextDisplay());
     theGameUI.setVisible(true);
 
+    theGameUI.listenSetPlayer(theGame);
+    theGameUI.setPlayerDisplay(theGame);
 
-    
     while (userInput != 'q') {
     //get input from the user
+    theGameUI.listenSetPlayer(theGame);
+    theGameUI.setPlayerDisplay(theGame);
+
     userInput = theGameUI.getInput();
 
     //ask the game if the user can move there
@@ -318,6 +538,9 @@ The controller method for making the game logic work.
         message = theGame.makeMove(userInput);
         theGameUI.draw(message, theGame.getNextDisplay());
         theGameUI.addToInventory(theGame);
+
+        theGameUI.checkInventoryAction(userInput, theGame);
+
         // get inventory update
     } catch (InvalidMoveException badMove) {
         message = "I didn't understand what you meant, please enter a command";

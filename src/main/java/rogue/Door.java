@@ -24,6 +24,10 @@ construction.
 
     }
 
+    public Door() {
+        rooms = new ArrayList<Room>();
+    }
+
 /**
 sets what room the door is connected to.
 @param con2 (int) id of the room that is connected to the door
