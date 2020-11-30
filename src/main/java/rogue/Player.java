@@ -149,9 +149,5 @@ returns the players chosen gender.
 
 
 
-    // public void pickUp() {
-
-    // }
-
 
 
