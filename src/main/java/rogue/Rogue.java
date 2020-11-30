@@ -65,11 +65,25 @@ public class Rogue {
         }
 
         linkRooms();
-
         setStartingPosition();
+        System.out.println("\n\n\n\n\n\n\n ..... \n\n\n");
+        setDefaultPlayer();
         // setStartingDisplay();
 
 
+    }
+
+    /**
+     * Defualt constructor
+     */
+    public Rogue() {
+        myRooms = new ArrayList<Room>();
+        myItems = new ArrayList<Item>();
+        symbolsMap = new HashMap<String, String>();
+        setDefaultPlayer();
+        setAllSymbols();
+        // linkRooms();
+        // setStartingPosition();
     }
 
 
@@ -83,6 +97,7 @@ public class Rogue {
     }
 
 
+
     private void setStartingDisplay() {
         for (Room r: myRooms) {
             if (r.getStart()) {
@@ -94,6 +109,17 @@ public class Rogue {
 
 
 
+    private void setDefaultPlayer() {
+        player = new Player();
+        currentRoom.setPlayer(player);
+        player.setXyLocation(new Point(1,1));
+        player.setName("Bob");
+        player.setCurrentRoom(currentRoom);
+        currentRoom.setPlayer(player);
+
+    }
+
+
 
 /**
  * sets the player.
@@ -103,6 +129,8 @@ public class Rogue {
         // player = new Player (thePlayer);
         player = thePlayer;
         currentRoom.setPlayer(player);
+        player.setCurrentRoom((currentRoom));
+        // player.setXyLocation(1,1);
         setStartingDisplay(); //fsrp
     }
 
@@ -114,13 +142,13 @@ creates a map that contains all symolbols used to print the displays.
  */
     public void setAllSymbols() {
 
-        symbolsMap.put("NS_WALL", parser.getSymbol("NS_WALL").toString());
-        symbolsMap.put("EW_WALL", parser.getSymbol("EW_WALL").toString());
-        symbolsMap.put("DOOR", parser.getSymbol("DOOR").toString());
-        symbolsMap.put("PLAYER", parser.getSymbol("PLAYER").toString());
-        symbolsMap.put("ITEM", parser.getSymbol("ITEM").toString());
-        symbolsMap.put("PASSAGE", parser.getSymbol("PASSAGE").toString());
-        symbolsMap.put("FLOOR", parser.getSymbol("FLOOR").toString());
+        symbolsMap.put("NS_WALL", parser.getSymbol("NS_WALL"));//.toString());
+        symbolsMap.put("EW_WALL", parser.getSymbol("EW_WALL"));//.toString());
+        symbolsMap.put("DOOR", parser.getSymbol("DOOR"));//.toString());
+        symbolsMap.put("PLAYER", parser.getSymbol("PLAYER"));//.toString());
+        symbolsMap.put("ITEM", parser.getSymbol("ITEM"));//.toString());
+        symbolsMap.put("PASSAGE", parser.getSymbol("PASSAGE"));//.toString());
+        symbolsMap.put("FLOOR", parser.getSymbol("FLOOR"));//.toString());
     }
 
 /**
@@ -146,7 +174,7 @@ creates a map that contains all symolbols used to print the displays.
  * @return null
  */
     public ArrayList<Room> getRooms() {
-        return null;
+        return myRooms;
 
     }
 
@@ -156,7 +184,7 @@ creates a map that contains all symolbols used to print the displays.
  * @return returns the array list of the items
  */
     public ArrayList<Item> getItems() {
-        return null;
+        return myItems;
 
     }
 
@@ -544,7 +572,10 @@ y
                         r.addItem(newItem);
                     } catch (ImpossiblePositionException e) {
                         e.printStackTrace();
+                    } catch (NoSuchItemException e) {
+                        System.out.println("Invalid Item");
                     }
+
                 }
             }
 

@@ -21,7 +21,14 @@ construction.
         rooms = new ArrayList<Room>();
         dir = direction;
         loc = location;
+    }
 
+    
+    /**
+     * constrcutor.
+     */
+    public Door() {
+        rooms = new ArrayList<Room>();
     }
 
 /**

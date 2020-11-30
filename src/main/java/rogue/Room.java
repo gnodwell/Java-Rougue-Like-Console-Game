@@ -70,6 +70,17 @@ returns the width of the room.
     }
 
 
+    public boolean verifyRoom() throws NotEnoughDoorsException {
+        if (!doors.isEmpty()) {
+            return true;
+        }
+        else {
+            throw new NotEnoughDoorsException();
+            // return false;
+        }
+    }
+
+
 /**
 gets the list of doors.
 @return doors (Door) returns a list of door objects */
@@ -375,7 +386,7 @@ adds item that has been parsed to an array list of items.
 @param toAdd (Item) contains the items to be added that have been parsed form RougueParser
 @throws ImpossiblePositionException thrown when the position is impossible for the player to be in
  */
-    public void addItem(Item toAdd) throws ImpossiblePositionException { /* Handle NoSuchItemException */
+    public void addItem(Item toAdd) throws ImpossiblePositionException, NoSuchItemException { /* Handle NoSuchItemException */
 
         Point xyLoc = toAdd.getXyLocation();
         int xLoc = (int) xyLoc.getX();
@@ -391,6 +402,17 @@ adds item that has been parsed to an array list of items.
             if (currentPlayer.getXyLocation().equals(xyLoc)) {
                 throw new ImpossiblePositionException();
             }
+        }
+
+        int idList[] = {1, 2, 3, 35};
+        int match = 0;
+        for (int i: idList) {
+            if (i == toAdd.getId()) {
+                match = 1;
+            }
+        }
+        if (match == 0) {
+            throw new NoSuchItemException();
         }
 
         for (Item it: items) {

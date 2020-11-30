@@ -19,7 +19,7 @@ public class RogueParser {
     private ArrayList<Map<String, String>> rooms = new ArrayList<>();
     private ArrayList<Map<String, String>> items = new ArrayList<>();
     private ArrayList<Map<String, String>> itemLocations = new ArrayList<>();
-    private HashMap<String, Character> symbols = new HashMap<>();
+    private HashMap<String, String> symbols = new HashMap<>();
 
     private Iterator<Map<String, String>> roomIterator;
     private Iterator<Map<String, String>> itemIterator;
@@ -76,7 +76,7 @@ public class RogueParser {
      * @param symbolName (String) Symbol Name
      * @return (Character) Display character for the symbol
      */
-    public Character getSymbol(String symbolName) {
+    public String getSymbol(String symbolName) {
 
         if (symbols.containsKey(symbolName)) {
             return symbols.get(symbolName);
@@ -159,8 +159,12 @@ public class RogueParser {
 
         // Make an array list of room information as maps
         for (int i = 0; i < symbolsJSONArray.size(); i++) {
-            JSONObject symbolObj = (JSONObject) symbolsJSONArray.get(i);
-            symbols.put(symbolObj.get("name").toString(), String.valueOf(symbolObj.get("symbol")).charAt(0));
+            try {
+                JSONObject symbolObj = (JSONObject) symbolsJSONArray.get(i);
+                symbols.put(symbolObj.get("name").toString(), String.valueOf(symbolObj.get("symbol")));//.charAt(0));
+            } catch (NullPointerException e) {
+                System.out.println("came across a problem trying to parse symbols");
+            }
         }
     }
 
