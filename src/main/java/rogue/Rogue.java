@@ -2,6 +2,7 @@ package rogue;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 // import java.util.concurrent.ConcurrentNavigableMap;
 
 // import javax.print.attribute.standard.PrinterInfo;
@@ -28,14 +29,20 @@ public class Rogue {
     public static final char DOWN = 'l';
     public static final char LEFT = 'j';
     public static final char RIGHT = 'k';
+    public static final char EAT = 'e';
+    public static final char WEAR = 'w';
+    public static final char TOSS = 't';
     private String nextDisplay = "-----\n|.@..|\n|....|\n-----";
     private RogueParser parser;
+    private Inventory playerInv;
     private Player player;
     private ArrayList<Room> myRooms;
     private ArrayList<Item> myItems;
-    private ArrayList<Door> doorsInTheRoom;
+    // private ArrayList<Door> doorsInTheRoom;
+    private HashMap<String, Door> doorsInTheRoom;
     private HashMap<String, String> symbolsMap;
     private Room currentRoom; //current room that is being displayed.
+
 
 /**
  * constructor.
@@ -44,6 +51,7 @@ public class Rogue {
     public Rogue(RogueParser theDungeonInfo) {
 
         parser = theDungeonInfo;
+        playerInv = new Inventory();
         // player = new Player();
         myRooms = new ArrayList<Room>();
         myItems = new ArrayList<Item>();
@@ -70,6 +78,10 @@ public class Rogue {
         // setStartingDisplay();
 
 
+    }
+
+    public HashMap<Integer, Item> getInventory () {
+        return playerInv.getInventory();
     }
 
 
@@ -118,7 +130,13 @@ creates a map that contains all symolbols used to print the displays.
         symbolsMap.put("EW_WALL", parser.getSymbol("EW_WALL").toString());
         symbolsMap.put("DOOR", parser.getSymbol("DOOR").toString());
         symbolsMap.put("PLAYER", parser.getSymbol("PLAYER").toString());
-        symbolsMap.put("ITEM", parser.getSymbol("ITEM").toString());
+        symbolsMap.put("GOLD", parser.getSymbol("GOLD").toString());
+        symbolsMap.put("POTION", parser.getSymbol("POTION").toString());
+        symbolsMap.put("SCROLL", parser.getSymbol("SCROLL").toString());
+        symbolsMap.put("CLOTHING", parser.getSymbol("CLOTHING").toString());
+        symbolsMap.put("FOOD", parser.getSymbol("FOOD").toString());
+        symbolsMap.put("RING", parser.getSymbol("RING").toString());
+        symbolsMap.put("SMALLFOOD", parser.getSymbol("SMALLFOOD").toString());
         symbolsMap.put("PASSAGE", parser.getSymbol("PASSAGE").toString());
         symbolsMap.put("FLOOR", parser.getSymbol("FLOOR").toString());
     }
@@ -167,38 +185,7 @@ creates a map that contains all symolbols used to print the displays.
  * @param filename (String) file containing all information to be used
  */
     public void createRooms(String filename) {
-        // int height;
-        // int width;
-        // int pos;
-
-        // for (Room r: myRooms) {
-        //     height = r.getHeight();
-        //     width =  r.getWidth();
-        //     char[][] roomDes = new char[width][height];
-        //     if (r.containsDoorKey("N")) {
-        //         pos = r.getDoor("N");
-        //         roomDes[pos][0] = r.getSymbols("Door");
-        //     } else if (r.containsDoorKey("E")) {
-        //         pos = r.getDoor("E");
-        //         roomDes[width][pos] = r.getSymbols("Door");
-        //     } else if if (r.containsDoorKey("S")) {
-        //         pos = r.getDoor("S");
-        //         roomDes[height][pos] = r.getSymbols("Door");
-        //     } else if (r.containsDoorKey("W")) {
-        //         pos = r.getDoor("W");
-        //         roomDes[0][pos] = r.getSymbols("Door");
-        //     }
-
-
-        // }
-
-
-
     }
-
-
-
-
 
 /**
  * displays all the rooms in the dungeon.
@@ -239,6 +226,8 @@ creates a map that contains all symolbols used to print the displays.
 
 
         player.setCurrentRoom(currentRoom);
+
+        Item itemTBA;
         // currentRoom.setPlayer(player);
 
 
@@ -253,7 +242,7 @@ creates a map that contains all symolbols used to print the displays.
                     Room otherRoom = d.getOtherRoom(currentRoom);
                     player.setCurrentRoom(otherRoom);
                     pX = 1;
-                    pY = 1;
+                    pY = doorLoc;
                     newLocation.setLocation(pX, pY);
                     player.setXyLocation(newLocation);
                     // otherRoom.setPlayer(player);
@@ -270,6 +259,17 @@ creates a map that contains all symolbols used to print the displays.
             if (flag0 != 1) {
                 newLocation.setLocation(pX - 1, pY);
                 player.setXyLocation(newLocation);
+                for (Item i: myItems) {
+                    if (i.getCurrentRoom().equals(player.getCurrentRoom())) {
+                        if (i.getXyLocation().equals(player.getXyLocation())) {
+                            playerInv.addItem(i);
+                System.out.println("picked up" + playerInv.getItem(playerInv.getInventory().size() - 1).getName());
+                            // myItems.remove(i);
+                        }
+                    }
+                }
+                myItems.remove(playerInv.getItem(playerInv.getSize() - 1));
+                currentRoom.removeItem(playerInv.getItem(playerInv.getSize() - 1));
             }
 
             break;
@@ -282,7 +282,7 @@ creates a map that contains all symolbols used to print the displays.
                         Door d = currentRoom.getDoorObject("N");
                         Room otherRoom = d.getOtherRoom(currentRoom);
                         player.setCurrentRoom(otherRoom);
-                        pX = 1;
+                        pX = doorLoc;
                         pY = 1;
                         newLocation.setLocation(pX, pY);
                         player.setXyLocation(newLocation);
@@ -299,6 +299,17 @@ creates a map that contains all symolbols used to print the displays.
                 if (flag1 != 1) {
                     newLocation.setLocation(pX, pY - 1);
                     player.setXyLocation(newLocation);
+                    for (Item i: myItems) {
+                        if (i.getCurrentRoom().equals(player.getCurrentRoom())) {
+                            if (i.getXyLocation().equals(player.getXyLocation())) {
+                                playerInv.addItem(i);
+             System.out.println("picked up" + playerInv.getItem(playerInv.getInventory().size() - 1).getName());
+                                // myItems.remove(i);
+                            }
+                        }
+                    }
+                    myItems.remove(playerInv.getItem(playerInv.getSize() - 1));
+                    currentRoom.removeItem(playerInv.getItem(playerInv.getSize() - 1));
                 }
 
 
@@ -312,7 +323,7 @@ creates a map that contains all symolbols used to print the displays.
                         Door d = currentRoom.getDoorObject("S");
                         Room otherRoom = d.getOtherRoom(currentRoom);
                         player.setCurrentRoom(otherRoom);
-                        pX = 1;
+                        pX = doorLoc;
                         pY = 1;
                         newLocation.setLocation(pX, pY);
                         player.setXyLocation(newLocation);
@@ -329,6 +340,17 @@ creates a map that contains all symolbols used to print the displays.
                 if (flag2 != 1) {
                     newLocation.setLocation(pX, pY + 1);
                     player.setXyLocation(newLocation);
+                    for (Item i: myItems) {
+                        if (i.getCurrentRoom().equals(player.getCurrentRoom())) {
+                            if (i.getXyLocation().equals(player.getXyLocation())) {
+                                playerInv.addItem(i);
+             System.out.println("picked up" + playerInv.getItem(playerInv.getInventory().size() - 1).getName());
+                                // myItems.remove(i);
+                            }
+                        }
+                    }
+                    myItems.remove(playerInv.getItem(playerInv.getSize() - 1));
+                    currentRoom.removeItem(playerInv.getItem(playerInv.getSize() - 1));
                 }
 
             break;
@@ -340,15 +362,13 @@ creates a map that contains all symolbols used to print the displays.
                     //if there is no door
                     int doorLoc = currentRoom.getDoor("E");
                     if (doorLoc == pY) {
-                        //handle door case
                         Door d = currentRoom.getDoorObject("E");
                         Room otherRoom = d.getOtherRoom(currentRoom);
                         player.setCurrentRoom(otherRoom);
                         pX = 1;
-                        pY = 1;
+                        pY = doorLoc;
                         newLocation.setLocation(pX, pY);
                         player.setXyLocation(newLocation);
-                        // otherRoom.setPlayer(player);
                         currentRoom = otherRoom;
                         currentRoom.setPlayer(player);
                         flag3 = 1;
@@ -361,6 +381,16 @@ creates a map that contains all symolbols used to print the displays.
                 if (flag3 != 1) {
                     newLocation.setLocation(pX + 1, pY);
                     player.setXyLocation(newLocation);
+                    for (Item i: myItems) {
+                        if (i.getCurrentRoom().equals(player.getCurrentRoom())) {
+                            if (i.getXyLocation().equals(player.getXyLocation())) {
+                                playerInv.addItem(i);
+       System.out.println("picked up" + playerInv.getItem(playerInv.getInventory().size() - 1).getName());
+                            }
+                        }
+                    }
+                    myItems.remove(playerInv.getItem(playerInv.getSize() - 1));
+                    currentRoom.removeItem(playerInv.getItem(playerInv.getSize() - 1));
                 }
 
             break;
@@ -368,8 +398,14 @@ creates a map that contains all symolbols used to print the displays.
             default:
             //other input
         }
-        nextDisplay = currentRoom.displayRoom();
-        // System.out.println(player.getXyLocation());
+        // if (!currentRoom.getStart()) {
+        //     nextDisplay = "That's a lovely move: " + Character.toString(input) + "\n";
+        //     nextDisplay =  nextDisplay.concat(currentRoom.displayRoom());
+        // } else {
+            nextDisplay = currentRoom.displayRoom();
+        // }
+
+
 
         // CUR_POS = (4,6)
         // input = "KKKJKKKLU"
@@ -388,7 +424,7 @@ creates a map that contains all symolbols used to print the displays.
 
 
         return "That's a lovely move: " +  Character.toString(input);
-
+        // return "";
     }
 
 
@@ -422,8 +458,8 @@ gets new postiong after a move has been made.
     private void linkRooms() {
         // ArrayList<Door> doorsInTheRoom;
         for (Room r: myRooms) {
-            doorsInTheRoom = r.getDoorList();
-            for (Door d: doorsInTheRoom) {
+            doorsInTheRoom = r.getDoorHash();
+            for (Door d: doorsInTheRoom.values()) {
                 int connectionLoc = d.getConnectedTo();
                 for (Room r2: myRooms) {
                     if (r2.getId() == connectionLoc) {
@@ -529,25 +565,36 @@ y
         String name = toAdd.get("name");
         String type = toAdd.get("type");          //info
         String des = toAdd.get("description");
+        int catcher = 1;
+        Random rand = new Random();
 
         if (toAdd.containsKey("x")) {
             Point p = new Point();
             p.setLocation(Integer.parseInt(toAdd.get("x")), Integer.parseInt(toAdd.get("y")));
             Item newItem = new Item(itemId, name, type, p, des);     //loot
+            if (type.equals("Scroll")) {
+                // make a magic class
+            }
+            else if (type.equals("Clothing")) {
+                // make a cloth
+            }
 
             int roomId = Integer.parseInt(toAdd.get("room"));
 
             for (Room r: myRooms) {
                 if (r.getId() == roomId) {
                     newItem.setCurrentRoom(r);
-                    try {
-                        r.addItem(newItem);
-                    } catch (ImpossiblePositionException e) {
-                        e.printStackTrace();
+                    while (catcher == 1) {
+                        try {
+                            r.addItem(newItem);
+                            catcher = 0;
+                        } catch (ImpossiblePositionException e) {
+                            catcher = 1;
+                            newItem.setXyLocation(new Point(rand.nextInt(r.getWidth()), rand.nextInt(r.getHeight())));
+                        }
                     }
                 }
             }
-
             myItems.add(newItem);
 
         }

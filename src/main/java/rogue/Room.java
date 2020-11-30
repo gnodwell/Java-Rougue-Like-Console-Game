@@ -9,8 +9,8 @@ import java.util.HashMap;
 
 
 /**
- * A room within the dungeon - contains monsters, treasure,
  * doors out, etc.
+ * A room within the dungeon - contains monsters, treasure,
  *
  *
  */
@@ -21,8 +21,8 @@ public class Room  {
     private int id;
     private ArrayList<Item> items;
     private Player currentPlayer;
-    // private HashMap<String, Integer> doors;
-    private ArrayList<Door> doors;
+    private HashMap<String, Door> doorsHash;
+    // private ArrayList<Door> doors;
     private HashMap<String, String> symbols;
     private Boolean start;
 
@@ -32,8 +32,8 @@ default constructor.
  */
     public Room() {
         items = new ArrayList<Item>();
-        // doors = new HashMap<String, Integer>();
-        doors = new ArrayList<Door>();
+        doorsHash = new HashMap<String, Door>();
+        // doors = new ArrayList<Door>();
         currentPlayer = null;
     }
 
@@ -52,14 +52,99 @@ gets the door on a certain wall.
 @return d (Door) returns the door object on that wall if found, else returns null
  */
     public Door getDoorObject(String direction) {
-        for (Door d: doors) {
-            if (d.getDirection().equals(direction)) {
-                return d;
-            }
+
+        // for (Door d: doors) {
+        //     if (d.getDirection().equals(direction)) {
+        //         return d;
+        //     }
+        // }
+        if (doorsHash.containsKey(direction)) {
+            return doorsHash.get(direction);
         }
 
         return null;
     }
+
+
+/**
+gets the list of doors.
+@return doors (Door) returns a list of door objects */
+// public ArrayList<Door> getDoorList() {
+//     return doors;
+// }
+public HashMap<String, Door> getDoorHash() {
+    return doorsHash;
+}
+
+
+/**
+gets the doors location.
+ * @param direction (String) contains which wall the door is on
+ * @return doors.get(direction.toUpperCase()) (int) returns location on the wall
+ */
+public int getDoor(String direction) {
+    // return doors.get(direction.toUpperCase()); //change this, no longer hash map
+
+    // for (Door door: doors) {
+    //     if (door.getDirection().equals(direction)) {
+    //         return door.getLocation();
+    //     }
+    // }
+
+    if (doorsHash.containsKey(direction)) {
+        Door d = doorsHash.get(direction);
+        return d.getLocation();
+    }
+
+    return -1;
+}
+
+
+/**
+sets the door connections.
+@param direction (String) which direction the door is on
+@param doorConnection (Integer) id of the room the door is connection to */
+public void setDoorConnection(String direction, Integer doorConnection) {
+    // for (Door d: doors) {
+    //     if (d.getDirection().equals(direction)) {
+    //         d.setConnectedTo(doorConnection);
+    //     }
+    // }
+
+    Door d = doorsHash.get(direction);
+    d.setConnectedTo(doorConnection);
+
+
+
+}
+
+
+/**
+sets the doors information.
+@param direction (String) contains which wall the door is on
+@param location (int) contains where the door is
+ */
+public void setDoor(String direction, int location) {
+    // doors.put(direction.toUpperCase(), );
+    Door door = new Door(direction, location);
+    // doors.add(door);
+    doorsHash.put(direction.toUpperCase(), door);
+
+}
+
+
+private Boolean containsDoorKey(String dir) {
+    // for (Door d: doors) {
+    //     if (d.getDirection().equals(dir)) {
+    //         return true;
+    //     }
+    // }
+    // return false;
+
+    return (doorsHash.containsKey(dir));
+}
+
+
 
 /**
 returns the width of the room.
@@ -70,12 +155,6 @@ returns the width of the room.
     }
 
 
-/**
-gets the list of doors.
-@return doors (Door) returns a list of door objects */
-    public ArrayList<Door> getDoorList() {
-        return doors;
-    }
 /**
  * sets the symbols to be used to build the room.
  * @param newSymbols (HashMap<String, String>) contains the key of the symbol and character used to reprsent symbol
@@ -157,6 +236,15 @@ sets the items information inside the room.
     }
 
 
+    /**
+     * remove an item from the room.
+     * @param itemTBR the item to be remove
+     */
+    public void removeItem(Item itemTBR) {
+        items.remove(itemTBR);
+    }
+
+
 /**
 gets the players information correlating to the room.
 @return currentPlayer (Player) returns players information
@@ -176,50 +264,12 @@ sets the players information.
     }
 
 
-/**
-gets the doors location.
- * @param direction (String) contains which wall the door is on
- * @return doors.get(direction.toUpperCase()) (int) returns location on the wall
- */
-    public int getDoor(String direction) {
-        // return doors.get(direction.toUpperCase()); //change this, no longer hash map
-        for (Door door: doors) {
-            if (door.getDirection().equals(direction)) {
-                return door.getLocation();
-            }
-        }
-
-        return -1;
-    }
 
 /*
 direction is one of NSEW.
 location is a number between 0 and the length of the wall
 */
 
-/**
-sets the door connections.
-@param direction (String) which direction the door is on
-@param doorConnection (Integer) id of the room the door is connection to */
-public void setDoorConnection(String direction, Integer doorConnection) {
-    for (Door d: doors) {
-        if (d.getDirection().equals(direction)) {
-            d.setConnectedTo(doorConnection);
-        }
-    }
-}
-
-
-/**
-sets the doors information.
-@param direction (String) contains which wall the door is on
-@param location (int) contains where the door is
- */
-    public void setDoor(String direction, int location) {
-        // doors.put(direction.toUpperCase(), location);
-        Door door = new Door(direction, location);
-        doors.add(door);
-    }
 
 /**
 checks if the player is located inside the room.
@@ -247,17 +297,6 @@ sets the starting position of the player.
  */
     public void setStart(Boolean playerStart) {
         start = playerStart;
-    }
-
-
-    private Boolean containsDoorKey(String dir) {
-        for (Door d: doors) {
-            if (d.getDirection().equals(dir)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 
@@ -347,7 +386,8 @@ Produces a string that can be printed to produce an ascii rendering of the room 
                                 Point point;
                                 point = item.getXyLocation();
                                 if ((j == (int) point.getX()) && (i == (int) point.getY()) && (flag == 0)) {
-                                    roomDescription = roomDescription.concat(symbols.get("ITEM"));
+                                    String itemName = item.getType().toUpperCase();
+                                    roomDescription = roomDescription.concat(symbols.get(itemName));
                                     flag = 1;
                                 }
                             }
@@ -380,7 +420,7 @@ adds item that has been parsed to an array list of items.
         Point xyLoc = toAdd.getXyLocation();
         int xLoc = (int) xyLoc.getX();
         int yLoc = (int) xyLoc.getY();
-        int catcher = 0;
+        // int catcher = 0;
 
 
         if (xLoc == 0 || xLoc == this.getWidth() - 1 || yLoc == 0 || yLoc == this.getHeight() - 1) {
